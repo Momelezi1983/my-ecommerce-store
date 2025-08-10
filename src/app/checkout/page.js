@@ -60,7 +60,8 @@ export default function CheckoutPage() {
   };
 
   return (
-	main className="container">
+    // Corrected line: Added the missing '<' for the main tag
+    <main className="container">
       <h1>Checkout</h1>
       <div className={styles.checkoutLayout}>
         <div className={styles.cartSummary}>
@@ -120,3 +121,4 @@ export default function CheckoutPage() {
     </main>
   );
 }
+
