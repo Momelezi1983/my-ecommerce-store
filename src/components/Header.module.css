@@ -1,0 +1,50 @@
+/* src/components/Header.module.css */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background-color: #ffffff;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.header h1 {
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+
+.button {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  font-weight: bold;
+  color: white;
+  border-radius: 0.25rem;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.buttonPrimary {
+  background-color: #3b82f6; /* Blue-500 */
+}
+
+.buttonPrimary:hover {
+  background-color: #2563eb; /* Blue-600 */
+}
+
+.buttonSuccess {
+  background-color: #10b981; /* Green-500 */
+}
+
+.buttonSuccess:hover {
+  background-color: #059669; /* Green-600 */
+}
+
+.buttonDanger {
+  background-color: #ef4444; /* Red-500 */
+}
+
+.buttonDanger:hover {
+  background-color: #dc2626; /* Red-600 */
+}
+

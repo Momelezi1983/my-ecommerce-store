@@ -1,0 +1,16 @@
+/* src/components/BuyButton.module.css */
+.buyButton {
+  background-color: #f97316; /* Orange-500 */
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  flex-grow: 1;
+  font-weight: bold;
+}
+
+.buyButton:hover {
+  background-color: #ea580c; /* Orange-600 */
+}
+
