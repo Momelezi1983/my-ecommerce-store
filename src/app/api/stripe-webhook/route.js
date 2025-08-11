@@ -2,10 +2,8 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import Stripe from 'stripe';
 
-// Initialize Stripe with your secret key
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
-// Initialize Supabase with your URL and service role key
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
   process.env.SUPABASE_SERVICE_ROLE_KEY
@@ -23,36 +21,33 @@ export async function POST(req) {
     return NextResponse.json({ error: `Webhook Error: ${err.message}` }, { status: 400 });
   }
 
-  // Handle the checkout.session.completed event
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object;
 
     const { userId, cartItems } = session.metadata;
+    const totalAmount = session.amount_total / 100; // Stripe amounts are in cents
 
     try {
-      // Parse the cart items from the metadata
       const items = JSON.parse(cartItems);
 
-      // Insert the new order into the 'orders' table
       const { data: order, error: orderError } = await supabase
         .from('orders')
         .insert({
           user_id: userId,
           status: 'pending',
+          total_amount: totalAmount, // Added total amount
         })
         .select()
         .single();
 
       if (orderError) throw orderError;
 
-      // Prepare the items for insertion into the 'order_items' table
       const orderItems = items.map(item => ({
         order_id: order.id,
         product_id: item.id,
         quantity: item.quantity,
       }));
 
-      // Insert the order items
       const { error: itemsError } = await supabase
         .from('order_items')
         .insert(orderItems);
@@ -61,7 +56,6 @@ export async function POST(req) {
 
       console.log('Order and items saved to Supabase successfully!');
 
-      // Return a 200 to Stripe to acknowledge the event
       return NextResponse.json({ received: true });
     } catch (error) {
       console.error('Error handling webhook:', error);
@@ -71,4 +65,3 @@ export async function POST(req) {
 
   return NextResponse.json({ received: true });
 }
-

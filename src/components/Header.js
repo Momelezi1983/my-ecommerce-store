@@ -28,9 +28,16 @@ export default function Header() {
           </button>
         </Link>
         {session ? (
-          <button onClick={handleLogout} className={`${styles.button} ${styles.buttonDanger}`}>
-            Logout
-          </button>
+          <>
+            <Link href="/my-orders">
+              <button className={`${styles.button} ${styles.buttonSecondary}`}>
+                My Orders
+              </button>
+            </Link>
+            <button onClick={handleLogout} className={`${styles.button} ${styles.buttonDanger}`}>
+              Logout
+            </button>
+          </>
         ) : (
           <Link href="/auth">
             <button className={`${styles.button} ${styles.buttonSuccess}`}>

@@ -36,12 +36,19 @@ export default function CheckoutPage() {
 
     const stripe = await stripePromise;
 
+    // Create a simplified cart to send to the API route
+    const simplifiedCart = cart.map(item => ({
+      id: item.id,
+      quantity: item.quantity,
+    }));
+    
     const response = await fetch('/api/create-checkout-session', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ cartItems: cart, userId: session?.user?.id }),
+      // Pass the simplified cart to the API
+      body: JSON.stringify({ cartItems: simplifiedCart, userId: session?.user?.id }),
     });
 
     const data = await response.json();
@@ -60,7 +67,6 @@ export default function CheckoutPage() {
   };
 
   return (
-    // Corrected line: Added the missing '<' for the main tag
     <main className="container">
       <h1>Checkout</h1>
       <div className={styles.checkoutLayout}>
@@ -121,4 +127,3 @@ export default function CheckoutPage() {
     </main>
   );
 }
-

@@ -1,24 +1,40 @@
 // src/app/api/create-checkout-session/route.js
 import { NextResponse } from 'next/server';
-
+import { supabase } from '@/lib/supabase'; // Make sure you have the supabase client imported
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 export async function POST(req) {
   try {
     const { cartItems, userId } = await req.json();
 
-    // Create line items for Stripe from the cart data
-    const lineItems = cartItems.map((item) => {
+    // 1. Get product IDs from the simplified cart
+    const productIds = cartItems.map((item) => item.id);
+
+    // 2. Fetch full product details from the Supabase database
+    const { data: products, error } = await supabase
+      .from('products')
+      .select('id, name, price, image_url')
+      .in('id', productIds);
+
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    // 3. Create line items for Stripe from the fetched product data
+    const lineItems = products.map((product) => {
+      // Find the quantity for this product from the cartItems
+      const cartItem = cartItems.find(item => item.id === product.id);
+      
       return {
         price_data: {
           currency: 'usd',
           product_data: {
-            name: item.name,
-            images: [item.image_url],
+            name: product.name,
+            images: [product.image_url],
           },
-          unit_amount: item.price * 100,
+          unit_amount: product.price * 100,
         },
-        quantity: item.quantity,
+        quantity: cartItem.quantity,
       };
     });
 
